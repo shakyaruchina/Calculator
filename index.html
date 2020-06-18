@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Calculator</title>
+        <style>
+            *{
+                margin: 0px;
+                padding: 0px;
+            }
+            .btn{
+                background-color: black;
+                color: white;
+                width: 25px;
+                height: 45px;
+                border: 1px solid teal;
+                text-align: center;
+                cursor: pointer;
+                font-size: 32px;
+                font-weight: 100;
+                padding-top: 3px;
+
+            }
+
+            .btn:hover{
+                background-color: palegreen;
+            }
+
+            .row{
+                display: table;
+                table-layout: fixed;
+                width: 200px;
+            }
+
+            .column{
+                display: table-cell;
+            }
+
+            #display{
+                height: 50px;
+                color: gray;
+                text-align: right;
+                border-top: 1px solid gray;
+                border-left: 1px solid gray;
+                border-right: 1px solid gray;
+                font-size: 32px;
+                background-color: orange;
+                overflow: hidden;
+                white-space: nowrap;
+                padding: 12px;
+                border-radius: 7px 7px 0 0 ;
+            }
+
+            .btn-operator{
+                background-color: gray;
+                color: white;
+            }
+            #equals{
+                border-radius: 0 0 7px 7px;
+            }
+            #main{
+                margin-top: 100px;
+                margin-left: calc(50% - 100px);
+            }
+
+            
+           
+        </style>
+        
+    </head> 
+    <body>
+        <div id="main">
+            <div class="row">
+                <div class="column" id="display"></div>
+                
+            </div>
+            <div class="row">
+                <div class="btn btn-num column" id="one" >1</div>
+                <div class="btn btn-num column" id="two">2</div>
+                <div class="btn btn-num column" id="three">3</div>
+                <div class="btn btn-operator column" id="add">+</div>
+            </div>
+
+            <div class="row">
+                <div class="btn btn-num column" id="four">4</div>
+                <div class="btn btn-num column" id="five">5</div>
+                <div class="btn btn-num column" id="six">6</div>
+                <div class="btn btn-operator column" id="sub">-</div>
+            </div>
+
+            <div class="row">
+                <div class="btn btn-num column" id="seven">7</div>
+                <div class="btn btn-num column" id="eight">8</div>
+                <div class="btn btn-num column" id="nine">9</div>
+                <div class="btn btn-operator column" id="multiply">x</div>
+            </div>
+
+            <div class="row">
+                <div class="btn column" id="clear">CE</div>
+                <div class="btn btn-num column" id="zero">0</div>
+                <div class="btn column" id="decimal">. </div>
+                <div class="btn btn-operator column" id="div">/</div>
+            </div>
+            <div class="row">
+                <div class="btn btn-operator column" id="equals">=</div>
+                
+            </div>
+            
+           
+        <script>
+
+            
+            
+            function getDisplay(){
+                return document.getElementById("display").innerText;
+            }
+
+            function printDisplay(num){
+                if(num==""){
+                    document.getElementById("display").innerText=num;
+                }
+                else{
+                    document.getElementById("display").innerText=getFormattedNumber(num);
+                }
+            }
+
+            function getFormattedNumber(num){
+                var n = Number(num);
+                var value = n.toLocaleString("en");
+                return value;
+            }
+           
+            //defining variables
+            var display ='0';
+            var pendingVal;
+            var evalStringArray = [];
+
+
+
+
+
+            
+            //for(var i=0;i<operator.length;i++){
+                //operator[i].addEventListener('click',function(){
+                    //if(this.id=="clear"){
+                  //      printDisplay(""); 
+                //    }
+              //  });
+            //}
+            //number visibility
+            var number = document.getElementsByClassName("btn-num");
+            var updateDisplay = (clickObj) =>{
+                var btnText = clickObj.target.innerText;
+
+                if(display ==='0')
+                    display='';
+
+                display +=btnText;
+                document.getElementById('display').innerText=display;
+            }
+            for(var i=0;i<number.length;i++){
+                number[i].addEventListener('click', updateDisplay,false);
+                //function(){
+                    //var output=reverseNumberFormat(getDisplay());
+                    //if(output!=NaN){
+                      //  output=output+this.id;
+                        //printDisplay(output);
+
+                    //}
+
+                    
+                   
+                //});
+
+                //operator functionality
+            var operation = (clickObj) =>{
+                var operator = clickObj.target.innerText;
+
+                switch(operator){
+                    case '+':
+                        pendingVal= display;
+                        display='0';
+                        document.getElementById('display').innerText = display;
+                        evalStringArray.push(pendingVal);
+                        evalStringArray.push('+');
+                        break;
+                    case '-':
+                        pendingVal= display;
+                        display='0';
+                        document.getElementById('display').innerText = display;
+                        evalStringArray.push(pendingVal);
+                        evalStringArray.push('-');
+                        break;
+                    case 'x': 
+                        pendingVal= display;
+                        display='0';
+                        document.getElementById('display').innerText = display;
+                        evalStringArray.push(pendingVal);
+                        evalStringArray.push('x');
+                        break;
+                    case '/':
+                        pendingVal= display;
+                        display='0';
+                        document.getElementById('display').innerText = display;
+                        evalStringArray.push(pendingVal);
+                        evalStringArray.push('/');
+                        break; 
+                    case '=':
+                        evalStringArray.push(display);
+                        var evaluation = eval(evalStringArray.join(''));
+                        display = evaluation + '';
+                        document.getElementById('display').innerText = display;
+                        evalStringArray =[];
+                        
+                    break; 
+                       
+                    default:
+
+                        break;    
+                }
+            }    
+    }       
+            //operator functionality
+            var operator = document.getElementsByClassName("btn-operator");
+            for(var i=0; i<operator.length;i++ ){
+                  operator[i].addEventListener('click', operation,false);
+            }
+            
+            //defining clear button funtion
+            var clearBtn = document.getElementById('clear');
+            clearBtn.onclick= () =>{
+                display = '0';
+                pendingVal = undefined;
+                evalStringArray=[];
+                document.getElementById('display').innerHTML = display;
+            }
+            
+            //defining decimal value
+            var decimalBtn = document.getElementById('decimal');
+            decimalBtn.onclick=() =>{
+                if(!display.includes('.'))
+                    display += '.';
+                document.getElementById('display').innerText = display;   
+            } 
+
+            
+
+
+            
+            
+        </script>
+    </body>
+
+</html>
